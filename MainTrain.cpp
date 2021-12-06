@@ -24,6 +24,7 @@ Point** generate(Point center,int R, size_t size){
 
 
 int main(){
+
     srand (time(NULL));
     const size_t N=250;
     float R=10+rand()%1000;
@@ -32,18 +33,20 @@ int main(){
     Point** ps=generate(Point(cx,cy),R,N);
 
     // your working copy
+    cout << "first" << endl;
     Point** ps_copy=new Point*[N];
     for(size_t i=0;i<N;i++)
         ps_copy[i]=new Point(ps[i]->x,ps[i]->y);
-
+    cout << "second" << endl;
     auto start = high_resolution_clock::now();
     Circle c=findMinCircle(ps_copy,N);
     auto stop = high_resolution_clock::now();
-
+    cout << "third" << endl;
     if((int)c.radius>(int)R)
         cout<<"you need to find a minimal radius (-40)"<<endl;
 
     bool covered=true;
+    cout << "forth" << endl;
     for(size_t i=0;i<N && covered;i++){
         float x2=(c.center.x-ps[i]->x)*(c.center.x-ps[i]->x);
         float y2=(c.center.y-ps[i]->y)*(c.center.y-ps[i]->y);
@@ -51,11 +54,13 @@ int main(){
         if(d>c.radius+1)
             covered=false;
     }
+    cout << "fifth" << endl;
     if(!covered)
         cout<<"all points should be covered (-45)"<<endl;
 
     auto duration = duration_cast<microseconds>(stop - start);
     int stime=duration.count();
+    cout << "six" << endl;
     cout<<"your time: "<<stime<<" microseconds"<<endl;
     if(stime>3000){
         cout<<"over time limit ";
@@ -67,14 +72,14 @@ int main(){
             cout<<"(-10)"<<endl;
         else cout<<"(-15)"<<endl;
     }
-
+    cout << "seven" << endl;
     for(size_t i=0;i<N;i++){
         delete ps[i];
         delete ps_copy[i];
     }
     delete[] ps;
     delete[] ps_copy;
-
+    cout << "eight" << endl;
     cout<<"done"<<endl;
     return 0;
 }
