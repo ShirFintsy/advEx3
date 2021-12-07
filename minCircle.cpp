@@ -1,17 +1,30 @@
+/*
+ * Assignment 3
+ * Shir Fintsy 206949075
+ * Ohad Marmor 207481524
+ */
 #include "minCircle.h"
-#include <cassert>
 #include <cmath>
 #include <vector>
 
-// Function to return the euclidean distance between two points
+/**
+ * this function returns the distance between 2 points
+ * @param first point
+ * @param second point
+ * @return thae distance between them
+ */
 double dist(const Point& first, const Point& second)
 {
     return sqrt(pow(first.x - second.x, 2)
                 + pow(first.y - second.y, 2));
 }
 
-// Function to check whether a point lies inside
-// or on the boundaries of the circle
+/**
+ *
+ * @param c - the circle we want to check
+ * @param p the point we want to check
+ * @return true if the circle encloses the point and false if doesn't
+ */
 bool is_inside(const Circle& c, const Point& p)
 {
     return dist(c.center, p) <= c.radius;
@@ -23,6 +36,8 @@ three points are given.
 
 Helper method to get a circle defined by 3 points
 */
+
+// this one returns the center of the circle
 Point get_circle_center(double bx, double by,
                         double cx, double cy)
 {
@@ -32,9 +47,8 @@ Point get_circle_center(double bx, double by,
     return { static_cast<float>((cy * B - by * C) / (2 * D)), static_cast<float>((bx * C - cx * B) / (2 * D)) };
 }
 
-/* Function to return a unique circle that
-intersects three points
- */
+// this function returns a circle that intersects three points
+
 Circle circle_from(const Point& first, const Point& second, const Point& third)
 {
     Point center = get_circle_center(second.x - first.x, second.y - first.y, third.x - first.x, third.y - first.y);
@@ -68,15 +82,21 @@ bool is_valid_circle(const Circle& c, const vector<Point>& P)
 }
 
 Circle min_circle_trivial(vector<Point>& P) {
-    assert(P.size() <= 3);
-    if (P.empty()) {
-        return {{0, 0}, 0};
-    } else if (P.size() == 1) {
-        return {P[0], 0};
-    } else if (P.size() == 2) {
-        return circle_from(P[0], P[1]);
+    unsigned long size = P.size();
+
+    // faster than if-else:
+    switch(size) {
+        case 0:
+            return {{0, 0}, 0};
+        case 1:
+            return {P[0], 0};
+        case 2:
+            return circle_from(P[0], P[1]);
+        default:
+            break;
     }
 
+    // an attempt to create a circle that encloses all the points:
     for (int i = 0; i < 3; i++) {
         for (int j = i + 1; j < 3; j++) {
 
@@ -89,22 +109,29 @@ Circle min_circle_trivial(vector<Point>& P) {
 }
 
 
-Circle welzel(Point **points, vector<Point> rPoints, size_t size) {
+Circle alg_welzel(Point **points, vector<Point> rPoints, size_t size) {
+    // here we stop the recursion:
     if (size == 0 || rPoints.size() == 3)
         return min_circle_trivial(rPoints);
-    Circle temp = welzel(points, rPoints, size - 1);
+
+    //continue the recursion without the last point
+    Circle temp = alg_welzel(points, rPoints, size - 1);
+
+    // the last point (faster than taking a random point):
     Point p = *points[size - 1];
-    // If d contains p, return d
+
+    // if the temp circle contains p, return the temp circle
     if (is_inside(temp, p)) {
         return temp;
     }
     // Otherwise, must be on the boundary of the MEC
     rPoints.push_back(p);
     // Return the MEC for P - {p} and R U {p}
-    return welzel(points, rPoints, size - 1);
+    return alg_welzel(points, rPoints, size - 1);
 }
 
+// just call the function that implements the algorithm of welzl:
 Circle findMinCircle(Point **points, size_t size) {
     vector<Point> R;
-    return welzel(points, R, size);
+    return alg_welzel(points, R, size);
 }
