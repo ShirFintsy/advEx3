@@ -108,7 +108,13 @@ Circle min_circle_trivial(vector<Point>& P) {
     return circle_from(P[0], P[1], P[2]);
 }
 
-
+/**
+ * this is the algorithm for creating a circle by O(n). uses recursion
+ * @param points - the points we want to enclose
+ * @param rPoints - empty at first call, and then adds the missing points and create a circle for them
+ * @param size - number of points in the array
+ * @return - a minimum circle.
+ */
 Circle alg_welzel(Point **points, vector<Point> rPoints, size_t size) {
     // here we stop the recursion:
     if (size == 0 || rPoints.size() == 3)
