@@ -136,7 +136,7 @@ Circle alg_welzel(Point **points, vector<Point> rPoints, size_t size) {
     return alg_welzel(points, rPoints, size - 1);
 }
 
-// just call the function that implements the algorithm of welzl:
+// just calling the function that implements the algorithm of welzl:
 Circle findMinCircle(Point **points, size_t size) {
     vector<Point> R;
     return alg_welzel(points, R, size);
